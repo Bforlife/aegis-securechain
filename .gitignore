@@ -1,0 +1,21 @@
+# Cosign private key
+cosign.key
+
+# Trivy cache
+.trivycache/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Python cache
+__pycache__/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
