@@ -9,3 +9,28 @@ permissions:
   contents: read
   packages: write
   id-token: write
+
+jobs:
+  securechain:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Install Trivy
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+
+      - name: Verify Installed Tools
+        run: |
+          docker --version
+          cosign version
+          trivy --version
