@@ -1,6 +1,6 @@
 name: SecureChain Keyless Signing Pipeline
 
-on:
+'on':
   push:
     branches:
       - main
@@ -12,11 +12,9 @@ permissions:
 
 jobs:
   securechain:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
