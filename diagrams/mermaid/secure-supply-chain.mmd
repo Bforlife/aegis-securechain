@@ -1,0 +1,31 @@
+flowchart TD
+
+A[Developer Push]
+
+A --> B[GitHub Repository]
+
+B --> C[GitHub Actions]
+
+C --> D[Checkout Source]
+
+D --> E[Build Docker Image]
+
+E --> F[Trivy Vulnerability Scan]
+
+F --> G[Generate SBOM]
+
+G --> H[Push Image to GHCR]
+
+H --> I[Request GitHub OIDC Token]
+
+I --> J[Fulcio]
+
+J --> K[Issue Short-lived Certificate]
+
+K --> L[Cosign Keyless Sign]
+
+L --> M[Upload Signature]
+
+M --> N[Rekor Transparency Log]
+
+N --> O[Deployment Ready]

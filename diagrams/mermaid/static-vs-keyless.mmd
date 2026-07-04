@@ -1,0 +1,33 @@
+flowchart LR
+
+subgraph Traditional["Traditional Signing"]
+A[Developer]
+B[cosign.key]
+C[Sign Container]
+D[Container Registry]
+E[Verify with cosign.pub]
+
+A --> B
+B --> C
+C --> D
+D --> E
+end
+
+subgraph Keyless["Sigstore Keyless Signing"]
+F[Developer / GitHub Actions]
+G[OIDC Identity]
+H[Fulcio CA]
+I[Ephemeral Certificate]
+J[Cosign]
+K[Signed Container]
+L[Rekor Transparency Log]
+M[Identity Verification]
+
+F --> G
+G --> H
+H --> I
+I --> J
+J --> K
+K --> L
+L --> M
+end

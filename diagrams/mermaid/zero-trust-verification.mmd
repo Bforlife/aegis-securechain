@@ -1,0 +1,24 @@
+flowchart TD
+
+A[Container Image]
+
+A --> B[verify_identity_gate.sh]
+
+B --> C{Identity Checks}
+
+C --> D[Certificate Identity]
+
+C --> E[OIDC Issuer]
+
+C --> F[Fulcio Certificate]
+
+C --> G[Rekor Log Inclusion]
+
+D --> H{All Checks Pass?}
+E --> H
+F --> H
+G --> H
+
+H -->|Yes| I[Deployment Approved]
+
+H -->|No| J[Deployment Blocked]
