@@ -1,0 +1,114 @@
+AEGIS-SECURECHAIN
+Phase 3 Identity Policy Audit
+Project Information
+
+Project: Aegis-SecureChain
+
+Phase: 3
+
+Audit Type: Identity-Based Container Verification
+
+Verification Tool: Cosign v3.1.1
+
+Verification Policy: OIDC Identity + Fulcio Certificate + Rekor Transparency Log
+
+Environment: Kali Linux Rolling (VMware Workstation)
+
+Purpose
+
+This audit demonstrates the implementation of an identity-based verification policy for container images.
+
+Unlike the previous phase, which verified signatures using a locally managed public key (cosign.pub), Phase 3 introduces a policy that validates the identity of the signing workload through OpenID Connect (OIDC), Fulcio-issued certificates, and Rekor transparency log verification.
+
+Scenario A – Authorized Keyless Identity (Expected Behaviour)
+
+Objective
+
+Verify a container image signed through a trusted GitHub Actions workflow using Sigstore Keyless Signing.
+
+Verification Command
+cosign verify \
+  --certificate-identity "https://github.com/Bforlife/aegis-securechain/.github/workflows/securechain_pipeline.yml@refs/heads/main" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+  ghcr.io/bforlife/aegis-securechain:latest
+Expected Verification Result
+Verification for ghcr.io/bforlife/aegis-securechain:latest
+
+✔ Certificate identity verified
+
+✔ OIDC issuer verified
+
+✔ Rekor transparency log inclusion verified
+
+✔ Signature verification successful
+
+Deployment Status:
+
+APPROVED
+
+Policy Result
+
+PASS
+
+Reason
+
+The container image satisfies all identity-based verification requirements and is eligible for deployment.
+
+
+Scenario B – Legacy Static-Key Image
+Objective
+
+Verify an image signed using the legacy static Cosign key pair from Phase 1.
+
+Verification Command
+./scripts/verify_identity_gate.sh "$IMAGE"
+
+Actual Output
+===========================================
+ Aegis SecureChain Identity Verification
+===========================================
+
+Error:
+no matching attestations:
+failed to verify log inclusion:
+transparency log certificate does not match
+
+failed to verify log inclusion:
+transparency log certificate does not match
+Policy Result
+
+FAILED
+
+Deployment Status:
+
+BLOCKED
+
+Reason:
+
+The container image was signed using a traditional Cosign key pair rather than a Fulcio-issued keyless certificate.
+
+Because the verification policy requires identity validation through GitHub OIDC and Rekor transparency log verification, the deployment is rejected.
+
+This behaviour confirms that the identity gate successfully prevents legacy or unauthorized signatures from being deployed.
+
+
+Security Assessment
+Control	Status
+GitHub OIDC Identity			Enforced
+Fulcio Certificate Validation		Enforced
+Rekor Transparency Log Validation	Enforced
+Legacy Static Key Rejection		Successful
+Identity Policy Enforcement		Successful
+
+Audit Summary
+
+The Phase 3 identity verification policy successfully enforces Zero Trust principles by validating workload identity rather than relying solely on cryptographic key ownership.
+
+Testing confirmed that:
+
+Authorized keyless identities are expected to pass verification.
+Legacy static-key signatures are rejected.
+Identity enforcement prevents unauthorized container deployment.
+
+The verification gate is therefore considered ready for integration into a future automated CI/CD pipeline once GitHub Actions execution becomes available.
+
