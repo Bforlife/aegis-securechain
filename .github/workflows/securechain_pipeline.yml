@@ -18,7 +18,7 @@ jobs:
 
   securechain:
 
-    runs-on: self-hostedO
+    runs-on: self-hosted
 
 
     steps:
