@@ -18,7 +18,8 @@ jobs:
 
   securechain:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hostedO
+
 
     steps:
 
