@@ -19,3 +19,12 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Self-hosted GitHub runner
+actions-runner/
+
+# Local artifacts
+*.tar.gz
+
+# Docker files
+*.log

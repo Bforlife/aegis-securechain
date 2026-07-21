@@ -1,0 +1,67 @@
+name: Phase 4 - SecureChain Keyless Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}/aegis-app:latest
+
+jobs:
+  build-and-sign:
+
+    runs-on: self-hosted
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@cad07c2c4e2d8f1d0e0d7e5d5d4a0d1d3c0b7d2
+
+
+
+
+      - name: Build Docker Image
+        run: |
+          docker build -t $IMAGE_NAME .
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+          -u "${{ github.actor }}" \
+          --password-stdin
+
+      - name: Push Docker Image
+        run: |
+          docker push $IMAGE_NAME
+
+      - name: Keyless Sign Image
+        env:
+          COSIGN_EXPERIMENTAL: "1"
+        run: |
+          cosign sign --yes $IMAGE_NAME
+
+      - name: Verify Signature
+        run: |
+          cosign verify \
+          --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+          --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/workflow_secure_v4.yml@refs/heads/main" \
+          $IMAGE_NAME > cosign_verification_output.json
+
+      - name: Upload Verification Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosign-verification
+          path: cosign_verification_output.json
+
+
+
+
