@@ -80,6 +80,7 @@ jobs:
 
 
 
+
       - name: Verify Signature
         run: |
           cosign verify \
@@ -99,3 +100,4 @@ jobs:
       - name: Save Attestation
         run: |
           cosign verify-attestation $IMAGE_NAME > attestation_output.json
+
